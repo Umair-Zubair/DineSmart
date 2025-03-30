@@ -35,20 +35,19 @@ const createTables = async () => {
       );
     `);
 
-    // Cuisines Table
+    // Cuisines Table (Using cuisine_name as Primary Key)
     await client.query(`
       CREATE TABLE IF NOT EXISTS Cuisines (
-        cuisine_id SERIAL PRIMARY KEY,
-        cuisine_name VARCHAR(255) NOT NULL UNIQUE
+        cuisine_name VARCHAR(255) PRIMARY KEY
       );
     `);
 
-    // Restaurant_Cuisines Table
+    // Restaurant_Cuisines Table (Linking with cuisine_name)
     await client.query(`
       CREATE TABLE IF NOT EXISTS Restaurant_Cuisines (
         restaurant_cuisine_id SERIAL PRIMARY KEY,
         restaurant_id INTEGER REFERENCES Restaurants(restaurant_id) ON DELETE CASCADE,
-        cuisine_id INTEGER REFERENCES Cuisines(cuisine_id) ON DELETE CASCADE
+        cuisine_name VARCHAR(255) REFERENCES Cuisines(cuisine_name) ON DELETE CASCADE
       );
     `);
 
@@ -113,7 +112,7 @@ const createTables = async () => {
       );
     `);
 
-    // Tables Table (All tables available by default)
+    // Tables Table
     await client.query(`
       CREATE TABLE IF NOT EXISTS Tables (
         table_no SERIAL PRIMARY KEY,
@@ -125,8 +124,6 @@ const createTables = async () => {
     `);
 
     console.log("✅ All tables created successfully!");
-
-    // Insert Dummy Data (Without ON CONFLICT)
     await insertDummyData();
 
   } catch (error) {
@@ -137,9 +134,10 @@ const createTables = async () => {
   }
 };
 
-// Function to check if data exists before inserting
+// Function to insert dummy data
 const insertDummyData = async () => {
   try {
+    // Insert Users
     const userExists = await client.query("SELECT 1 FROM Users LIMIT 1");
     if (userExists.rowCount === 0) {
       await client.query(`
@@ -164,6 +162,7 @@ const insertDummyData = async () => {
       console.log("✅ Dummy users inserted.");
     }
 
+    // Insert Restaurants
     const restaurantExists = await client.query("SELECT 1 FROM Restaurants LIMIT 1");
     if (restaurantExists.rowCount === 0) {
       await client.query(`
@@ -211,6 +210,7 @@ const insertDummyData = async () => {
       console.log("✅ Dummy restaurants inserted.");
     }
 
+    // Insert Cuisines
     const cuisineExists = await client.query("SELECT 1 FROM Cuisines LIMIT 1");
     if (cuisineExists.rowCount === 0) {
       await client.query(`
@@ -230,6 +230,7 @@ const insertDummyData = async () => {
       console.log("✅ Dummy cuisines inserted.");
     }
 
+    // Insert Menu Items
     const menuExists = await client.query("SELECT 1 FROM MenuItems LIMIT 1");
     if (menuExists.rowCount === 0) {
       await client.query(`
@@ -373,43 +374,45 @@ const insertDummyData = async () => {
       console.log("✅ Dummy menu items inserted.");
     }
 
+    // Insert Reservations
     const reservationExists = await client.query("SELECT 1 FROM Reservations LIMIT 1");
     if (reservationExists.rowCount === 0) {
       await client.query(`
-         INSERT INTO Reservations (user_id, restaurant_id, date, time, guests, status, created_at)
-      VALUES
-        /* Pasta Palace */
-        (3, 1, '2025-04-10', '18:30:00', 2, 1, '2025-03-25 09:00:00'), -- John (confirmed)
-        (4, 1, '2025-04-11', '19:00:00', 4, 0, '2025-03-26 10:30:00'), -- Alice (pending)
-        
-        /* Sushi World */
-        (5, 6, '2025-04-12', '20:00:00', 3, 1, '2025-03-27 11:15:00'), -- Bob (confirmed)
-        (3, 6, '2025-04-13', '12:30:00', 2, 2, '2025-03-28 14:00:00'), -- John (cancelled)
-        
-        /* Curry House */
-        (4, 9, '2025-04-14', '19:30:00', 6, 1, '2025-03-29 16:45:00'), -- Alice (confirmed)
-        
-        /* Le Bistro */
-        (5, 11, '2025-04-15', '18:00:00', 2, 1, '2025-03-30 10:20:00'), -- Bob (confirmed)
-        
-        /* Thai Orchid */
-        (6, 15, '2025-04-16', '20:30:00', 4, 0, '2025-04-01 12:10:00'), -- Emma (pending)
-        
-        /* The Burger Joint */
-        (3, 18, '2025-04-17', '13:00:00', 3, 1, '2025-04-02 08:30:00'), -- John (confirmed)
-        
-        /* Multi-restaurant examples */
-        (4, 2, '2025-04-18', '19:00:00', 2, 1, '2025-04-03 17:00:00'), -- Alice @ Trattoria Roma
-        (5, 7, '2025-04-19', '12:00:00', 5, 1, '2025-04-04 09:45:00'), -- Bob @ Ramen House
-        (6, 12, '2025-04-20', '20:00:00', 2, 0, '2025-04-05 18:20:00'), -- Emma @ Petit Paris
-        (3, 16, '2025-04-21', '19:30:00', 4, 1, '2025-04-06 11:30:00'), -- John @ Olive Tree
-        (4, 19, '2025-04-22', '18:00:00', 3, 1, '2025-04-07 14:15:00'), -- Alice @ Pho 99
-        (5, 3, '2025-04-23', '14:00:00', 2, 2, '2025-04-08 10:50:00'), -- Bob @ Gelato Heaven (cancelled)
-        (6, 5, '2025-04-24', '21:00:00', 2, 1, '2025-04-09 13:40:00'); -- Emma @ Burrito Loco
-    `);
+        INSERT INTO Reservations (user_id, restaurant_id, date, time, guests, status, created_at)
+        VALUES
+          /* Pasta Palace */
+          (7, 1, '2025-04-10', '18:30:00', 2, 1, '2025-03-25 09:00:00'), -- John (confirmed)
+          (8, 1, '2025-04-11', '19:00:00', 4, 0, '2025-03-26 10:30:00'), -- Alice (pending)
+          
+          /* Sushi World */
+          (9, 6, '2025-04-12', '20:00:00', 3, 1, '2025-03-27 11:15:00'), -- Bob (confirmed)
+          (7, 6, '2025-04-13', '12:30:00', 2, 2, '2025-03-28 14:00:00'), -- John (cancelled)
+          
+          /* Curry House */
+          (8, 9, '2025-04-14', '19:30:00', 6, 1, '2025-03-29 16:45:00'), -- Alice (confirmed)
+          
+          /* Le Bistro */
+          (9, 11, '2025-04-15', '18:00:00', 2, 1, '2025-03-30 10:20:00'), -- Bob (confirmed)
+          
+          /* Thai Orchid */
+          (10, 15, '2025-04-16', '20:30:00', 4, 0, '2025-04-01 12:10:00'), -- Emma (pending)
+          
+          /* The Burger Joint */
+          (7, 18, '2025-04-17', '13:00:00', 3, 1, '2025-04-02 08:30:00'), -- John (confirmed)
+          
+          /* Multi-restaurant examples */
+          (8, 2, '2025-04-18', '19:00:00', 2, 1, '2025-04-03 17:00:00'), -- Alice @ Trattoria Roma
+          (9, 7, '2025-04-19', '12:00:00', 5, 1, '2025-04-04 09:45:00'), -- Bob @ Ramen House
+          (10, 12, '2025-04-20', '20:00:00', 2, 0, '2025-04-05 18:20:00'), -- Emma @ Petit Paris
+          (7, 16, '2025-04-21', '19:30:00', 4, 1, '2025-04-06 11:30:00'), -- John @ Olive Tree
+          (8, 19, '2025-04-22', '18:00:00', 3, 1, '2025-04-07 14:15:00'), -- Alice @ Pho 99
+          (9, 3, '2025-04-23', '14:00:00', 2, 2, '2025-04-08 10:50:00'), -- Bob @ Gelato Heaven (cancelled)
+          (10, 5, '2025-04-24', '21:00:00', 2, 1, '2025-04-09 13:40:00'); -- Emma @ Burrito Loco
+      `);
       console.log("✅ Dummy reservations inserted.");
     }
 
+    // Insert Tables
     const tableExists = await client.query("SELECT 1 FROM Tables LIMIT 1");
     if (tableExists.rowCount === 0) {
       await client.query(`
@@ -417,45 +420,53 @@ const insertDummyData = async () => {
         VALUES 
           (1, 4, 'Booth'),
           (1, 2, 'Outdoor'),
-          (2, 6, 'Family');
+          (2, 6, 'Family'),
+          (6, 8, 'Tatami Room'),
+          (6, 2, 'Sushi Bar'),
+          (11, 4, 'Window'),
+          (11, 2, 'Romantic'),
+          (15, 6, 'Family'),
+          (18, 4, 'Booth'),
+          (19, 8, 'Large Group');
       `);
       console.log("✅ Dummy tables inserted.");
     }
 
+    // Insert Restaurant Cuisines (Using cuisine_name as reference)
     const restaurantCuisineExists = await client.query("SELECT 1 FROM Restaurant_Cuisines LIMIT 1");
     if (restaurantCuisineExists.rowCount === 0) {
       await client.query(`
-        INSERT INTO Restaurant_Cuisines (restaurant_id, cuisine_id)
+        INSERT INTO Restaurant_Cuisines (restaurant_id, cuisine_name)
         VALUES
           -- Italian
-          (1, 1), (2, 1), (3, 1),
+          (1, 'Italian'), (2, 'Italian'), (3, 'Italian'),
           
           -- Mexican
-          (4, 2), (5, 2),
+          (4, 'Mexican'), (5, 'Mexican'),
           
           -- Japanese
-          (6, 3), (7, 3), (8, 3),
+          (6, 'Japanese'), (7, 'Japanese'), (8, 'Japanese'),
           
           -- Indian
-          (9, 4), (10, 4),
+          (9, 'Indian'), (10, 'Indian'),
           
           -- French
-          (11, 5), (12, 5),
+          (11, 'French'), (12, 'French'),
           
           -- Chinese
-          (13, 6), (14, 6),
+          (13, 'Chinese'), (14, 'Chinese'),
           
           -- Thai
-          (15, 7),
+          (15, 'Thai'),
           
           -- Mediterranean
-          (16, 8), (17, 8),
+          (16, 'Mediterranean'), (17, 'Mediterranean'),
           
           -- American
-          (18, 9),
+          (18, 'American'),
           
           -- Vietnamese
-          (19, 10)
+          (19, 'Vietnamese')
       `);
       console.log("✅ Dummy restaurant cuisines inserted.");
     }
