@@ -8,16 +8,10 @@ const pool = new Pool({
   ssl: { rejectUnauthorized: false },
 });
 
-// GET all restaurant cuisines (optionally filter by restaurant_id)
+// GET all restaurant cuisines
 router.get("/", async (req, res) => {
   try {
-    let query = "SELECT * FROM Restaurant_Cuisines";
-    const params = [];
-    if (req.query.restaurant_id) {
-      query += " WHERE restaurant_id = $1";
-      params.push(req.query.restaurant_id);
-    }
-    const result = await pool.query(query, params);
+    const result = await pool.query("SELECT * FROM Restaurant_Cuisines");
     res.json(result.rows);
   } catch (err) {
     res.status(500).json({ error: err.message });
