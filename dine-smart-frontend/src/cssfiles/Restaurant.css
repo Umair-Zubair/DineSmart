@@ -1,0 +1,185 @@
+/* Restaurant.css */
+.restaurant-container {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 2rem;
+    font-family: 'Poppins', sans-serif;
+    color: #333;
+    background-color: #fff;
+    border-radius: 12px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+  }
+  
+  .restaurant-header {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: #1a365d;
+    margin-bottom: 0.5rem;
+    text-align: center;
+    position: relative;
+  }
+  
+  .restaurant-header::after {
+    content: '';
+    position: absolute;
+    bottom: -10px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 80px;
+    height: 3px;
+    background-color: #f59e0b;
+    border-radius: 2px;
+  }
+  
+  .restaurant-location {
+    text-align: center;
+    font-size: 1.1rem;
+    color: #64748b;
+    margin-bottom: 2.5rem;
+    font-style: italic;
+  }
+  
+  .menu-container {
+    background-color: #f8fafc;
+    border-radius: 10px;
+    padding: 2rem;
+    margin-bottom: 2rem;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
+  }
+  
+  .menu-title {
+    font-size: 1.8rem;
+    color: #334155;
+    margin-bottom: 1.5rem;
+    text-align: center;
+    font-weight: 600;
+  }
+  
+  .menu-list {
+    list-style: none;
+    padding: 0;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 20px;
+  }
+  
+  .menu-item {
+    background-color: white;
+    border-radius: 8px;
+    padding: 1.5rem;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+  }
+  
+  .menu-item:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 12px 20px rgba(0, 0, 0, 0.08);
+  }
+  
+  .menu-item h3 {
+    font-size: 1.2rem;
+    color: #1e293b;
+    margin-top: 0;
+    margin-bottom: 0.8rem;
+    font-weight: 600;
+  }
+  
+  .menu-item p {
+    color: #64748b;
+    margin-bottom: 1rem;
+    line-height: 1.5;
+    flex-grow: 1;
+  }
+  
+  .menu-price {
+    display: block;
+    color: #166534;
+    font-weight: 600;
+    font-size: 1.1rem;
+    text-align: right;
+    margin-top: auto;
+  }
+  
+  .reserve-button {
+    display: block;
+    width: 100%;
+    max-width: 300px;
+    margin: 0 auto;
+    padding: 0.8rem 1.5rem;
+    background-color: #2563eb;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    font-size: 1.1rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+    text-align: center;
+    box-shadow: 0 4px 6px rgba(37, 99, 235, 0.25);
+  }
+  
+  .reserve-button:hover {
+    background-color: #1d4ed8;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 12px rgba(37, 99, 235, 0.3);
+  }
+  
+  .reserve-button:active {
+    transform: translateY(0);
+  }
+  
+  .loading, .error {
+    text-align: center;
+    padding: 3rem;
+    font-size: 1.2rem;
+  }
+  
+  .loading {
+    color: #64748b;
+    position: relative;
+    min-height: 200px;
+  }
+  
+  .loading::after {
+    content: '';
+    position: absolute;
+    left: 50%;
+    top: 60%;
+    transform: translate(-50%, -50%);
+    width: 40px;
+    height: 40px;
+    border: 4px solid #e2e8f0;
+    border-top-color: #2563eb;
+    border-radius: 50%;
+    animation: spin 1s infinite linear;
+  }
+  
+  .error {
+    color: #dc2626;
+    background-color: #fee2e2;
+    border-radius: 8px;
+  }
+  
+  @keyframes spin {
+    to {
+      transform: translate(-50%, -50%) rotate(360deg);
+    }
+  }
+  
+  /* Responsive adjustments */
+  @media (max-width: 768px) {
+    .restaurant-container {
+      padding: 1.5rem;
+    }
+    
+    .menu-list {
+      grid-template-columns: 1fr;
+    }
+    
+    .restaurant-header {
+      font-size: 2rem;
+    }
+  }
