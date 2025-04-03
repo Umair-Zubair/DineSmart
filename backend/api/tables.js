@@ -8,13 +8,11 @@ const pool = new Pool({
   ssl: { rejectUnauthorized: false },
 });
 
-// GET all tables for a restaurant (restaurant_id required as a query parameter)
-router.get("/", async (req, res) => {
+// GET all tables for a restaurant
+router.get("/:restaurant_id", async (req, res) => {
   try {
-    if (!req.query.restaurant_id) {
-      return res.status(400).json({ error: "restaurant_id query parameter is required" });
-    }
-    const result = await pool.query("SELECT * FROM Tables WHERE restaurant_id = $1", [req.query.restaurant_id]);
+    const { restaurant_id } = req.params;
+    const result = await pool.query("SELECT * FROM Tables WHERE restaurant_id = $1", [restaurant_id]);
     res.json(result.rows);
   } catch (err) {
     res.status(500).json({ error: err.message });

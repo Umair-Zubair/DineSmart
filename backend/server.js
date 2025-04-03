@@ -29,7 +29,6 @@ const restaurantCuisinesAPI = require("./api/restaurant_cuisines");
 const tablesAPI = require("./api/tables");
 const cuisinesAPI = require("./api/cuisines");
 
-
 // Routes
 app.get('/', (req, res) => {
   const html = `
@@ -89,113 +88,18 @@ app.get('/', (req, res) => {
   `;
   res.send(html);
 });
-// Users
-app.get("/users", async (req, res) => {
-  try {
-    const result = await pool.query("SELECT * FROM Users");
-    res.json(result.rows);
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
-});
 
-// Restaurants
-app.get("/restaurants", async (req, res) => {
-  try {
-    const result = await pool.query("SELECT * FROM Restaurants");
-    res.json(result.rows);
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
-});
-
-// Menu Items
-app.get("/menu-items/:restaurant_id", async (req, res) => {
-  try {
-    const { restaurant_id } = req.params;
-    const result = await pool.query("SELECT * FROM MenuItems WHERE restaurant_id = $1", [restaurant_id]);
-    res.json(result.rows);
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
-});
-
-// Reservations
-app.get("/reservations/:user_id", async (req, res) => {
-  try {
-    const { user_id } = req.params;
-    const result = await pool.query("SELECT * FROM Reservations WHERE user_id = $1", [user_id]);
-    res.json(result.rows);
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
-});
-
-// Orders
-app.get("/orders/:user_id", async (req, res) => {
-  try {
-    const { user_id } = req.params;
-    const result = await pool.query("SELECT * FROM Orders WHERE user_id = $1", [user_id]);
-    res.json(result.rows);
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
-});
-
-// Order Items
-app.get("/order-items/:order_id", async (req, res) => {
-  try {
-    const { order_id } = req.params;
-    const result = await pool.query("SELECT * FROM OrderItems WHERE order_id = $1", [order_id]);
-    res.json(result.rows);
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
-});
-
-// Reviews
-app.get("/reviews/:restaurant_id", async (req, res) => {
-  try {
-    const { restaurant_id } = req.params;
-    const result = await pool.query("SELECT * FROM Reviews WHERE restaurant_id = $1", [restaurant_id]);
-    res.json(result.rows);
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
-});
-
-// Restaurant Cuisines
-app.get("/restaurant-cuisines", async (req, res) => {
-  try {
-    const result = await pool.query("SELECT * FROM Restaurant_Cuisines");
-    res.json(result.rows);
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
-});
-
-
-
-// Tables
-app.get("/tables/:restaurant_id", async (req, res) => {
-  try {
-    const { restaurant_id } = req.params;
-    const result = await pool.query("SELECT * FROM Tables WHERE restaurant_id = $1", [restaurant_id]);
-    res.json(result.rows);
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
-});
-
-// Cuisines
-app.get("/cuisines", async (req, res) => {
-  try {
-    const result = await pool.query("SELECT * FROM Cuisines");
-    res.json(result.rows);
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
-});
+// Use the imported API routers
+app.use("/users", usersAPI);
+app.use("/restaurants", restaurantsAPI);
+app.use("/menu-items", menuItemsAPI);
+app.use("/reservations", reservationsAPI);
+app.use("/orders", ordersAPI);
+app.use("/order-items", orderItemsAPI);
+app.use("/reviews", reviewsAPI);
+app.use("/restaurant-cuisines", restaurantCuisinesAPI);
+app.use("/tables", tablesAPI);
+app.use("/cuisines", cuisinesAPI);
 
 // Start server
 app.listen(port, () => {
