@@ -1,59 +1,112 @@
 import { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import axios from "axios";
+import "../cssfiles/Restaurant.css";
 
-const API_BASE_URL = "https://dinesmart-backend.vercel.app"; // backend url
+const API_BASE_URL = "https://dinesmart-backend.vercel.app";
 
 const Restaurant = () => {
-  const { id } = useParams();
-  const [menu, setMenu] = useState([]);
-  const [reservation, setReservation] = useState({ date: "", time: "", guests: 1 });
+  const { restaurant_id } = useParams();
+  const [restaurant, setRestaurant] = useState(null);
+  const [menuItems, setMenuItems] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
-    axios.get(`${API_BASE_URL}/menu-items?restaurant_id=${id}`).then((res) => setMenu(res.data));
-  }, [id]);
+    if (!restaurant_id) {
+      console.error("No restaurant_id found in URL params");
+      setError("Restaurant ID is missing");
+      setLoading(false);
+      return;
+    }
 
-  const handleReservation = () => {
-    axios.post(`${API_BASE_URL}/reservations`, { ...reservation, restaurant_id: id })
-      .then(() => alert("Reservation successful!"))
-      .catch(err => alert("Error making reservation"));
-  };
+    console.log("Fetching data for restaurant:", restaurant_id);
+
+    const id = parseInt(restaurant_id, 10);
+    
+    if (isNaN(id)) {
+      console.error("Invalid restaurant_id:", restaurant_id);
+      setError("Invalid restaurant ID");
+      setLoading(false);
+      return;
+    }
+
+    setLoading(true);
+    setError(null);
+
+    // Modified approach: First fetch all restaurants, then filter by ID
+    Promise.all([
+      axios.get(`${API_BASE_URL}/restaurants`),
+      axios.get(`${API_BASE_URL}/menu-items/${id}`)
+    ])
+    .then(([restaurantsRes, menuRes]) => {
+      console.log("Fetched all restaurants:", restaurantsRes.data);
+      console.log("Fetched menu items:", menuRes.data);
+      
+      // Find the specific restaurant by ID from the list
+      const foundRestaurant = restaurantsRes.data.find(
+        (rest) => rest.id === id || rest.restaurant_id === id
+      );
+      
+      if (!foundRestaurant) {
+        console.error("Restaurant not found in results");
+        setError("Restaurant not found");
+        setLoading(false);
+        return;
+      }
+      
+      console.log("Found restaurant:", foundRestaurant);
+      setRestaurant(foundRestaurant);
+      setMenuItems(menuRes.data);
+    })
+    .catch((err) => {
+      console.error("Error fetching data:", err);
+      setError("Failed to load restaurant data");
+    })
+    .finally(() => {
+      setLoading(false);
+      console.log("API Calls Finished");
+    });
+
+  }, [restaurant_id]);
+
+  // For debugging
+  useEffect(() => {
+    console.log("Current restaurant_id from params:", restaurant_id);
+  }, [restaurant_id]);
+
+  if (loading) return <div className="loading">Loading restaurant...</div>;
+  if (error) return <div className="error">{error}</div>;
 
   return (
-    <div className="p-6">
-      <h1 className="text-2xl font-bold">Menu</h1>
-      <div className="grid grid-cols-2 gap-4 mt-4">
-        {menu.map((item) => (
-          <div key={item.item_id} className="border p-4 rounded-lg shadow-lg">
-            <h2 className="font-bold">{item.name}</h2>
-            <p>{item.description}</p>
-            <p>${item.price}</p>
+    <div className="restaurant-container">
+      {restaurant ? (
+        <>
+          <h1 className="restaurant-header">{restaurant.name}</h1>
+          <p className="restaurant-location">{restaurant.location}</p>
+          
+          <div className="menu-container">
+            <h2 className="menu-title">Menu</h2>
+            {menuItems && menuItems.length > 0 ? (
+              <ul className="menu-list">
+                {menuItems.map((item) => (
+                  <li key={item.item_id} className="menu-item">
+                    <h3>{item.name}</h3>
+                    <p>{item.description}</p>
+                    <span className="menu-price">${item.price}</span>
+                  </li>
+                ))}
+              </ul>
+            ) : (
+              <p>No menu items available for this restaurant.</p>
+            )}
           </div>
-        ))}
-      </div>
 
-      <div className="mt-6">
-        <h2 className="text-xl font-bold">Make a Reservation</h2>
-        <input
-          type="date"
-          onChange={(e) => setReservation({ ...reservation, date: e.target.value })}
-          className="block p-2 border my-2"
-        />
-        <input
-          type="time"
-          onChange={(e) => setReservation({ ...reservation, time: e.target.value })}
-          className="block p-2 border my-2"
-        />
-        <input
-          type="number"
-          min="1"
-          onChange={(e) => setReservation({ ...reservation, guests: e.target.value })}
-          className="block p-2 border my-2"
-        />
-        <button onClick={handleReservation} className="bg-blue-500 text-white px-4 py-2 rounded">
-          Reserve
-        </button>
-      </div>
+          <button className="reserve-button">Reserve a Table</button>
+        </>
+      ) : (
+        <p>Restaurant not found.</p>
+      )}
     </div>
   );
 };
