@@ -165,15 +165,16 @@ app.get("/reviews/:restaurant_id", async (req, res) => {
 });
 
 // Restaurant Cuisines
-app.get("/restaurant-cuisines/:restaurant_id", async (req, res) => {
+app.get("/restaurant-cuisines", async (req, res) => {
   try {
-    const { restaurant_id } = req.params;
-    const result = await pool.query("SELECT * FROM Restaurant_Cuisines WHERE restaurant_id = $1", [restaurant_id]);
+    const result = await pool.query("SELECT * FROM Restaurant_Cuisines");
     res.json(result.rows);
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
 });
+
+
 
 // Tables
 app.get("/tables/:restaurant_id", async (req, res) => {
