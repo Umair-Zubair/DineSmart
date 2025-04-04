@@ -8,31 +8,34 @@ const pool = new Pool({
   ssl: { rejectUnauthorized: false },
 });
 
-// GET all menu items (optionally filter by restaurant_id)
+// GET all menu items (no filtering)
 router.get("/", async (req, res) => {
   try {
-    let query = "SELECT * FROM MenuItems";
-    const params = [];
-    if (req.query.restaurant_id) {
-      query += " WHERE restaurant_id = $1";
-      params.push(req.query.restaurant_id);
-    }
-    const result = await pool.query(query, params);
+    const query = "SELECT * FROM MenuItems";
+    const result = await pool.query(query);
     res.json(result.rows);
   } catch (err) {
-    res.status(500).json({ error: err.message });
+    console.error("Error fetching all menu items:", err);
+    res.status(500).json({ error: "Failed to retrieve menu items" });
   }
 });
 
-// GET menu item by id
-router.get("/:id", async (req, res) => {
+// GET menu items by restaurant_id as path parameter
+router.get("/:restaurant_id", async (req, res) => {
   try {
-    const { id } = req.params;
-    const result = await pool.query("SELECT * FROM MenuItems WHERE item_id = $1", [id]);
-    if (result.rows.length === 0) return res.status(404).json({ error: "Menu item not found" });
-    res.json(result.rows[0]);
+    const { restaurant_id } = req.params;
+    
+    const query = "SELECT * FROM MenuItems WHERE restaurant_id = $1";
+    const result = await pool.query(query, [restaurant_id]);
+    
+    if (result.rows.length === 0) {
+      return res.status(404).json({ message: "No menu items found for this restaurant" });
+    }
+    
+    res.json(result.rows);
   } catch (err) {
-    res.status(500).json({ error: err.message });
+    console.error("Error fetching menu items by restaurant ID:", err);
+    res.status(500).json({ error: "Failed to retrieve menu items" });
   }
 });
 
