@@ -42,10 +42,10 @@ router.get("/:restaurant_id", async (req, res) => {
 // POST new menu item
 router.post("/", async (req, res) => {
   try {
-    const { restaurant_id, name, description, price, availability } = req.body;
+    const { restaurant_id, name, description, price, availability, image_url } = req.body;
     const result = await pool.query(
-      "INSERT INTO MenuItems (restaurant_id, name, description, price, availability) VALUES ($1, $2, $3, $4, $5) RETURNING *",
-      [restaurant_id, name, description, price, availability]
+      "INSERT INTO MenuItems (restaurant_id, name, description, price, availability, image_url) VALUES ($1, $2, $3, $4, $5, $6) RETURNING *",
+      [restaurant_id, name, description, price, availability, image_url]
     );
     res.status(201).json(result.rows[0]);
   } catch (err) {
@@ -57,10 +57,10 @@ router.post("/", async (req, res) => {
 router.put("/:id", async (req, res) => {
   try {
     const { id } = req.params;
-    const { restaurant_id, name, description, price, availability } = req.body;
+    const { restaurant_id, name, description, price, availability, image_url } = req.body;
     const result = await pool.query(
-      "UPDATE MenuItems SET restaurant_id = $1, name = $2, description = $3, price = $4, availability = $5 WHERE item_id = $6 RETURNING *",
-      [restaurant_id, name, description, price, availability, id]
+      "UPDATE MenuItems SET restaurant_id = $1, name = $2, description = $3, price = $4, availability = $5, image_url = $6 WHERE item_id = $7 RETURNING *",
+      [restaurant_id, name, description, price, availability, image_url, id]
     );
     if (result.rows.length === 0) return res.status(404).json({ error: "Menu item not found" });
     res.json(result.rows[0]);

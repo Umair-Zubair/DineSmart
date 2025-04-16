@@ -23,7 +23,7 @@ const createTables = async () => {
       );
     `);
 
-    // Restaurants Table
+    // Restaurants Table - Added image_url column
     await client.query(`
       CREATE TABLE IF NOT EXISTS Restaurants (
         restaurant_id SERIAL PRIMARY KEY,
@@ -31,6 +31,7 @@ const createTables = async () => {
         location VARCHAR(255) NOT NULL,
         rating DECIMAL(2,1),
         opening_hours VARCHAR(255),
+        image_url TEXT,
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
       );
     `);
@@ -51,7 +52,7 @@ const createTables = async () => {
       );
     `);
 
-    // MenuItems Table
+    // MenuItems Table - Added image_url column
     await client.query(`
       CREATE TABLE IF NOT EXISTS MenuItems (
         item_id SERIAL PRIMARY KEY,
@@ -60,6 +61,7 @@ const createTables = async () => {
         description TEXT,
         price DECIMAL(10,2) NOT NULL,
         availability BOOLEAN DEFAULT TRUE,
+        image_url TEXT,
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
       );
     `);
@@ -165,50 +167,50 @@ const insertDummyData = async () => {
       console.log("✅ Dummy users inserted.");
     }
 
-    // Insert Restaurants (with updated locations)
+    // Insert Restaurants (with updated locations and added image URLs)
     const restaurantExists = await client.query("SELECT 1 FROM Restaurants LIMIT 1");
     if (restaurantExists.rowCount === 0) {
       await client.query(`
-        INSERT INTO Restaurants (name, location, rating, opening_hours)
+        INSERT INTO Restaurants (name, location, rating, opening_hours, image_url)
         VALUES
           -- Italian (3)
-          ('Pasta Palace', 'Bahadurabad', 4.5, '11:00-22:00'),
-          ('Trattoria Roma', 'Bahadurabad', 4.2, '12:00-23:00'),
-          ('Gelato Heaven', 'Bahadurabad', 4.8, '10:00-21:00'),
+          ('Pasta Palace', 'Bahadurabad', 4.5, '11:00-22:00', 'https://res.cloudinary.com/dfuedbntn/image/upload/v1744782179/pasta_palace_i6jtox.jpg'),
+          ('Trattoria Roma', 'Bahadurabad', 4.2, '12:00-23:00', 'https://res.cloudinary.com/dfuedbntn/image/upload/v1744782179/trattoria_roma_zj4k5p.jpg'),
+          ('Gelato Heaven', 'Bahadurabad', 4.8, '10:00-21:00', 'https://res.cloudinary.com/dfuedbntn/image/upload/v1744782179/gelato_heaven_ruvhgc.jpg'),
           
           -- Mexican (2)
-          ('Taco Fiesta', 'Bahadurabad', 4.1, '10:00-20:00'),
-          ('Burrito Loco', 'Bahadurabad', 3.9, '11:00-19:00'),
+          ('Taco Fiesta', 'Bahadurabad', 4.1, '10:00-20:00', 'https://res.cloudinary.com/dfuedbntn/image/upload/v1744782179/taco_fiesta_k9yxle.jpg'),
+          ('Burrito Loco', 'Bahadurabad', 3.9, '11:00-19:00', 'https://res.cloudinary.com/dfuedbntn/image/upload/v1744782179/burrito_loco_wbeqfx.jpg'),
           
           -- Japanese (3)
-          ('Sushi World', 'Bahadurabad', 4.7, '11:30-22:30'),
-          ('Ramen House', 'Defence', 4.3, '12:00-21:00'),
-          ('Tokyo Grill', 'Defence', 4.0, '17:00-23:00'),
+          ('Sushi World', 'Bahadurabad', 4.7, '11:30-22:30', 'https://res.cloudinary.com/dfuedbntn/image/upload/v1744782179/sushi_world_n1yvnq.jpg'),
+          ('Ramen House', 'Defence', 4.3, '12:00-21:00', 'https://res.cloudinary.com/dfuedbntn/image/upload/v1744782179/ramen_house_lfbfwg.jpg'),
+          ('Tokyo Grill', 'Defence', 4.0, '17:00-23:00', 'https://res.cloudinary.com/dfuedbntn/image/upload/v1744782179/tokyo_grill_xwopym.jpg'),
           
           -- Indian (2)
-          ('Curry House', 'Defence', 4.4, '11:00-21:30'),
-          ('Spice Garden', 'Defence', 4.6, '12:00-22:00'),
+          ('Curry House', 'Defence', 4.4, '11:00-21:30', 'https://res.cloudinary.com/dfuedbntn/image/upload/v1744782179/curry_house_jfpyeh.jpg'),
+          ('Spice Garden', 'Defence', 4.6, '12:00-22:00', 'https://res.cloudinary.com/dfuedbntn/image/upload/v1744782179/spice_garden_vctznb.jpg'),
           
           -- French (2)
-          ('Le Bistro', 'Defence', 4.9, '08:00-20:00'),
-          ('Petit Paris', 'Defence', 4.2, '09:00-19:00'),
+          ('Le Bistro', 'Defence', 4.9, '08:00-20:00', 'https://res.cloudinary.com/dfuedbntn/image/upload/v1744782179/le_bistro_jmhxkl.jpg'),
+          ('Petit Paris', 'Defence', 4.2, '09:00-19:00', 'https://res.cloudinary.com/dfuedbntn/image/upload/v1744782179/petit_paris_pjw27i.jpg'),
           
           -- Chinese (2)
-          ('Dragon Wok', 'Defence', 3.8, '10:30-21:00'),
-          ('Lucky Noodle', 'Johar', 4.1, '11:00-22:00'),
+          ('Dragon Wok', 'Defence', 3.8, '10:30-21:00', 'https://res.cloudinary.com/dfuedbntn/image/upload/v1744782179/dragon_wok_fwrygj.jpg'),
+          ('Lucky Noodle', 'Johar', 4.1, '11:00-22:00', 'https://res.cloudinary.com/dfuedbntn/image/upload/v1744782179/lucky_noodle_a3bfdx.jpg'),
           
           -- Thai (1)
-          ('Thai Orchid', 'Johar', 4.5, '12:00-21:30'),
+          ('Thai Orchid', 'Johar', 4.5, '12:00-21:30', 'https://res.cloudinary.com/dfuedbntn/image/upload/v1744782179/thai_orchid_r6wbhj.jpg'),
           
           -- Mediterranean (2)
-          ('Olive Tree', 'Johar', 4.3, '10:00-20:00'),
-          ('Falafel King', 'Johar', 4.0, '11:00-19:00'),
+          ('Olive Tree', 'Johar', 4.3, '10:00-20:00', 'https://res.cloudinary.com/dfuedbntn/image/upload/v1744782179/olive_tree_rrhdkp.jpg'),
+          ('Falafel King', 'Johar', 4.0, '11:00-19:00', 'https://res.cloudinary.com/dfuedbntn/image/upload/v1744782179/falafel_king_wvepjr.jpg'),
           
           -- American (1)
-          ('The Burger Joint', 'Johar', 3.7, '08:00-22:00'),
+          ('The Burger Joint', 'Johar', 3.7, '08:00-22:00', 'https://res.cloudinary.com/dfuedbntn/image/upload/v1744782179/burger_joint_qfv8zn.jpg'),
           
           -- Vietnamese (1)
-          ('Pho 99', 'Johar', 4.4, '10:00-21:00');
+          ('Pho 99', 'Johar', 4.4, '10:00-21:00', 'https://res.cloudinary.com/dfuedbntn/image/upload/v1744782179/pho_99_klmcep.jpg');
       `);
       console.log("✅ Dummy restaurants inserted.");
     }
@@ -233,151 +235,151 @@ const insertDummyData = async () => {
       console.log("✅ Dummy cuisines inserted.");
     }
 
-    // Insert Menu Items
+    // Insert Menu Items (adding image_url)
     const menuExists = await client.query("SELECT 1 FROM MenuItems LIMIT 1");
     if (menuExists.rowCount === 0) {
       await client.query(`
-        INSERT INTO MenuItems (restaurant_id, name, description, price, availability)
+        INSERT INTO MenuItems (restaurant_id, name, description, price, availability, image_url)
         VALUES
           /* 1. Pasta Palace (Italian) */
-          (1, 'Spaghetti Carbonara', 'Classic pasta with egg, pancetta, and pecorino', 14.99, TRUE),
-          (1, 'Margherita Pizza', 'Tomato sauce, fresh mozzarella, basil', 12.99, TRUE),
-          (1, 'Tiramisu', 'Coffee-flavored dessert with mascarpone', 8.50, TRUE),
-          (1, 'Chicken Parmigiana', 'Breaded chicken with tomato sauce and mozzarella', 16.99, TRUE),
-          (1, 'Risotto ai Funghi', 'Creamy risotto with wild mushrooms', 15.50, TRUE),
-          (1, 'Garlic Bread', 'Toasted bread with garlic butter', 5.99, TRUE),
+          (1, 'Spaghetti Carbonara', 'Classic pasta with egg, pancetta, and pecorino', 14.99, TRUE, 'https://res.cloudinary.com/dfuedbntn/image/upload/v1744782179/Spaghetti_Carbonara_pvmwih.png'),
+          (1, 'Margherita Pizza', 'Tomato sauce, fresh mozzarella, basil', 12.99, TRUE, 'https://res.cloudinary.com/dfuedbntn/image/upload/v1744782179/Margherita_Pizza_sdcuqw.png'),
+          (1, 'Tiramisu', 'Coffee-flavored dessert with mascarpone', 8.50, TRUE, 'https://res.cloudinary.com/dfuedbntn/image/upload/v1744782179/Tiramisu_cfmvjn.png'),
+          (1, 'Chicken Parmigiana', 'Breaded chicken with tomato sauce and mozzarella', 16.99, TRUE, 'https://res.cloudinary.com/dfuedbntn/image/upload/v1744782179/Chicken_Parmigiana_rzehxp.png'),
+          (1, 'Risotto ai Funghi', 'Creamy risotto with wild mushrooms', 15.50, TRUE, 'https://res.cloudinary.com/dfuedbntn/image/upload/v1744782179/Risotto_ai_Funghi_x5wxoa.png'),
+          (1, 'Garlic Bread', 'Toasted bread with garlic butter', 5.99, TRUE, 'https://res.cloudinary.com/dfuedbntn/image/upload/v1744782179/Garlic_Bread_cmggjv.png'),
       
           /* 2. Trattoria Roma (Italian) */
-          (2, 'Fettuccine Alfredo', 'Pasta in creamy Parmesan sauce', 15.99, TRUE),
-          (2, 'Lasagna Bolognese', 'Layered pasta with meat sauce', 17.50, TRUE),
-          (2, 'Caprese Salad', 'Tomatoes, mozzarella, basil, balsamic glaze', 10.99, TRUE),
-          (2, 'Osso Buco', 'Braised veal shanks with gremolata', 24.99, TRUE),
-          (2, 'Panna Cotta', 'Italian custard with berry sauce', 7.99, TRUE),
+          (2, 'Fettuccine Alfredo', 'Pasta in creamy Parmesan sauce', 15.99, TRUE, 'https://res.cloudinary.com/dfuedbntn/image/upload/v1744782179/Fettuccine_Alfredo_yz4hkl.png'),
+          (2, 'Lasagna Bolognese', 'Layered pasta with meat sauce', 17.50, TRUE, 'https://res.cloudinary.com/dfuedbntn/image/upload/v1744782179/Lasagna_Bolognese_crpjme.png'),
+          (2, 'Caprese Salad', 'Tomatoes, mozzarella, basil, balsamic glaze', 10.99, TRUE, 'https://res.cloudinary.com/dfuedbntn/image/upload/v1744782179/Caprese_Salad_awbxdf.png'),
+          (2, 'Osso Buco', 'Braised veal shanks with gremolata', 24.99, TRUE, 'https://res.cloudinary.com/dfuedbntn/image/upload/v1744782179/Osso_Buco_qwerty.png'),
+          (2, 'Panna Cotta', 'Italian custard with berry sauce', 7.99, TRUE, 'https://res.cloudinary.com/dfuedbntn/image/upload/v1744782179/Panna_Cotta_asdfgh.png'),
       
           /* 3. Gelato Heaven (Italian) */
-          (3, 'Vanilla Gelato', 'Classic creamy vanilla', 4.99, TRUE),
-          (3, 'Pistachio Gelato', 'Rich Sicilian pistachio flavor', 5.50, TRUE),
-          (3, 'Affogato', 'Vanilla gelato with espresso shot', 6.99, TRUE),
-          (3, 'Sorbet Trio', 'Lemon, mango, raspberry', 7.50, TRUE),
-          (3, 'Chocolate Hazelnut', 'Decadent Nutella-flavored gelato', 5.99, TRUE),
+          (3, 'Vanilla Gelato', 'Classic creamy vanilla', 4.99, TRUE, 'https://res.cloudinary.com/dfuedbntn/image/upload/v1744782179/Vanilla_Gelato_zxcvbn.png'),
+          (3, 'Pistachio Gelato', 'Rich Sicilian pistachio flavor', 5.50, TRUE, 'https://res.cloudinary.com/dfuedbntn/image/upload/v1744782179/Pistachio_Gelato_poiuyt.png'),
+          (3, 'Affogato', 'Vanilla gelato with espresso shot', 6.99, TRUE, 'https://res.cloudinary.com/dfuedbntn/image/upload/v1744782179/Affogato_lkjhgf.png'),
+          (3, 'Sorbet Trio', 'Lemon, mango, raspberry', 7.50, TRUE, 'https://res.cloudinary.com/dfuedbntn/image/upload/v1744782179/Sorbet_Trio_mnbvcx.png'),
+          (3, 'Chocolate Hazelnut', 'Decadent Nutella-flavored gelato', 5.99, TRUE, 'https://res.cloudinary.com/dfuedbntn/image/upload/v1744782179/Chocolate_Hazelnut_abcdef.png'),
       
           /* 4. Taco Fiesta (Mexican) */
-          (4, 'Carne Asada Tacos', 'Grilled steak tacos with cilantro/onions', 10.99, TRUE),
-          (4, 'Guacamole + Chips', 'Fresh avocado dip with tortilla chips', 8.50, TRUE),
-          (4, 'Chicken Quesadilla', 'Grilled flour tortilla with cheese', 12.99, TRUE),
-          (4, 'Churros', 'Cinnamon sugar pastry with chocolate dip', 6.50, TRUE),
-          (4, 'Horchata', 'Traditional rice milk drink', 3.99, TRUE),
+          (4, 'Carne Asada Tacos', 'Grilled steak tacos with cilantro/onions', 10.99, TRUE, 'https://res.cloudinary.com/dfuedbntn/image/upload/v1744782179/Carne_Asada_Tacos_ghijkl.png'),
+          (4, 'Guacamole + Chips', 'Fresh avocado dip with tortilla chips', 8.50, TRUE, 'https://res.cloudinary.com/dfuedbntn/image/upload/v1744782179/Guacamole_Chips_mnopqr.png'),
+          (4, 'Chicken Quesadilla', 'Grilled flour tortilla with cheese', 12.99, TRUE, 'https://res.cloudinary.com/dfuedbntn/image/upload/v1744782179/Chicken_Quesadilla_stuvwx.png'),
+          (4, 'Churros', 'Cinnamon sugar pastry with chocolate dip', 6.50, TRUE, 'https://res.cloudinary.com/dfuedbntn/image/upload/v1744782179/Churros_yzabcd.png'),
+          (4, 'Horchata', 'Traditional rice milk drink', 3.99, TRUE, 'https://res.cloudinary.com/dfuedbntn/image/upload/v1744782179/Horchata_efghij.png'),
       
           /* 5. Burrito Loco (Mexican) */
-          (5, 'Super Burrito', 'Flour tortilla with rice, beans, meat', 11.99, TRUE),
-          (5, 'Nachos Supreme', 'Tortilla chips with cheese/beans/guacamole', 10.50, TRUE),
-          (5, 'Enchiladas Verdes', 'Corn tortillas with green sauce', 13.99, TRUE),
-          (5, 'Mexican Street Corn', 'Grilled corn with mayo/chili powder', 5.99, TRUE),
-          (5, 'Flan', 'Caramel custard dessert', 5.50, TRUE),
+          (5, 'Super Burrito', 'Flour tortilla with rice, beans, meat', 11.99, TRUE, 'https://res.cloudinary.com/dfuedbntn/image/upload/v1744782179/Super_Burrito_klmnop.png'),
+          (5, 'Nachos Supreme', 'Tortilla chips with cheese/beans/guacamole', 10.50, TRUE, 'https://res.cloudinary.com/dfuedbntn/image/upload/v1744782179/Nachos_Supreme_qrstuv.png'),
+          (5, 'Enchiladas Verdes', 'Corn tortillas with green sauce', 13.99, TRUE, 'https://res.cloudinary.com/dfuedbntn/image/upload/v1744782179/Enchiladas_Verdes_wxyzab.png'),
+          (5, 'Mexican Street Corn', 'Grilled corn with mayo/chili powder', 5.99, TRUE, 'https://res.cloudinary.com/dfuedbntn/image/upload/v1744782179/Mexican_Street_Corn_cdefgh.png'),
+          (5, 'Flan', 'Caramel custard dessert', 5.50, TRUE, 'https://res.cloudinary.com/dfuedbntn/image/upload/v1744782179/Flan_ijklmn.png'),
       
           /* 6. Sushi World (Japanese) */
-          (6, 'California Roll', 'Crab, avocado, cucumber', 8.99, TRUE),
-          (6, 'Salmon Nigiri', 'Fresh salmon over pressed rice', 6.50, TRUE),
-          (6, 'Dragon Roll', 'Eel and avocado topped with eel sauce', 14.99, TRUE),
-          (6, 'Miso Soup', 'Traditional Japanese soup', 2.99, TRUE),
-          (6, 'Tempura Udon', 'Noodle soup with shrimp tempura', 12.99, TRUE),
-          (6, 'Green Tea Ice Cream', 'Matcha-flavored dessert', 5.50, TRUE),
+          (6, 'California Roll', 'Crab, avocado, cucumber', 8.99, TRUE, 'https://res.cloudinary.com/dfuedbntn/image/upload/v1744782179/California_Roll_ngrh5p.png'),
+          (6, 'Salmon Nigiri', 'Fresh salmon over pressed rice', 6.50, TRUE, 'https://res.cloudinary.com/dfuedbntn/image/upload/v1744782179/Salmon_Nigiri_yjr3wl.png'),
+          (6, 'Dragon Roll', 'Eel and avocado topped with eel sauce', 14.99, TRUE, 'https://res.cloudinary.com/dfuedbntn/image/upload/v1744782179/Dragon_Roll_oufcgl.png'),
+          (6, 'Miso Soup', 'Traditional Japanese soup', 2.99, TRUE, 'https://res.cloudinary.com/dfuedbntn/image/upload/v1744782179/Miso_Soup_r5xdgl.png'),
+          (6, 'Tempura Udon', 'Noodle soup with shrimp tempura', 12.99, TRUE, 'https://res.cloudinary.com/dfuedbntn/image/upload/v1744782179/Tempura_Udon_uopnyx.png'),
+          (6, 'Green Tea Ice Cream', 'Matcha-flavored dessert', 5.50, TRUE, 'https://res.cloudinary.com/dfuedbntn/image/upload/v1744782179/Green_Tea_Ice_Cream_wddlw5.png'),
       
           /* 7. Ramen House (Japanese) */
-          (7, 'Tonkotsu Ramen', 'Pork bone broth with noodles', 13.99, TRUE),
-          (7, 'Spicy Miso Ramen', 'Rich miso broth with chili oil', 14.50, TRUE),
-          (7, 'Gyoza', 'Pan-fried pork dumplings', 7.99, TRUE),
-          (7, 'Chashu Don', 'Rice bowl with braised pork', 11.99, TRUE),
-          (7, 'Matcha Latte', 'Green tea with steamed milk', 4.50, TRUE),
+          (7, 'Tonkotsu Ramen', 'Pork bone broth with noodles', 13.99, TRUE, 'https://res.cloudinary.com/dfuedbntn/image/upload/v1744782179/Tonkotsu_Ramen_fyy3ue.png'),
+          (7, 'Spicy Miso Ramen', 'Rich miso broth with chili oil', 14.50, TRUE, 'https://res.cloudinary.com/dfuedbntn/image/upload/v1744782179/Spicy_Miso_Ramen_oxtngq.png'),
+          (7, 'Gyoza', 'Pan-fried pork dumplings', 7.99, TRUE, 'https://res.cloudinary.com/dfuedbntn/image/upload/v1744782179/Gyoza_a7pvfr.png'),
+          (7, 'Chashu Don', 'Rice bowl with braised pork', 11.99, TRUE, 'https://res.cloudinary.com/dfuedbntn/image/upload/v1744782179/Chashu_Don_qocuwu.png'),
+          (7, 'Matcha Latte', 'Green tea with steamed milk', 4.50, TRUE, 'https://res.cloudinary.com/dfuedbntn/image/upload/v1744782179/Matcha_Latte_egf6lf.png'),
       
           /* 8. Tokyo Grill (Japanese) */
-          (8, 'Teriyaki Chicken', 'Grilled chicken with sweet soy glaze', 15.99, TRUE),
-          (8, 'Beef Yakiniku', 'Grilled marinated beef', 18.99, TRUE),
-          (8, 'Sashimi Platter', 'Assorted fresh raw fish', 22.99, TRUE),
-          (8, 'Edamame', 'Steamed salted soybeans', 4.99, TRUE),
-          (8, 'Mochi Ice Cream', 'Rice cake with ice cream filling', 6.99, TRUE),
+          (8, 'Teriyaki Chicken', 'Grilled chicken with sweet soy glaze', 15.99, TRUE, 'https://res.cloudinary.com/dfuedbntn/image/upload/v1744782179/Teriyaki_Chicken_opqrst.png'),
+          (8, 'Beef Yakiniku', 'Grilled marinated beef', 18.99, TRUE, 'https://res.cloudinary.com/dfuedbntn/image/upload/v1744782179/Beef_Yakiniku_uvwxyz.png'),
+          (8, 'Sashimi Platter', 'Assorted fresh raw fish', 22.99, TRUE, 'https://res.cloudinary.com/dfuedbntn/image/upload/v1744782179/Sashimi_Platter_abcdef.png'),
+          (8, 'Edamame', 'Steamed salted soybeans', 4.99, TRUE, 'https://res.cloudinary.com/dfuedbntn/image/upload/v1744782179/Edamame_ghijkl.png'),
+          (8, 'Mochi Ice Cream', 'Rice cake with ice cream filling', 6.99, TRUE, 'https://res.cloudinary.com/dfuedbntn/image/upload/v1744782179/Mochi_Ice_Cream_mnopqr.png'),
       
           /* 9. Curry House (Indian) */
-          (9, 'Chicken Tikka Masala', 'Grilled chicken in creamy tomato sauce', 16.99, TRUE),
-          (9, 'Lamb Vindaloo', 'Spicy curry with potatoes', 18.99, TRUE),
-          (9, 'Garlic Naan', 'Leavened bread with garlic', 3.99, TRUE),
-          (9, 'Samosa', 'Fried pastry with spiced potatoes', 5.99, TRUE),
-          (9, 'Mango Lassi', 'Yogurt drink with mango', 4.50, TRUE),
+          (9, 'Chicken Tikka Masala', 'Grilled chicken in creamy tomato sauce', 16.99, TRUE, 'https://res.cloudinary.com/dfuedbntn/image/upload/v1744782179/Chicken_Tikka_Masala_stuvwx.png'),
+          (9, 'Lamb Vindaloo', 'Spicy curry with potatoes', 18.99, TRUE, 'https://res.cloudinary.com/dfuedbntn/image/upload/v1744782179/Lamb_Vindaloo_yzabcd.png'),
+          (9, 'Garlic Naan', 'Leavened bread with garlic', 3.99, TRUE, 'https://res.cloudinary.com/dfuedbntn/image/upload/v1744782179/Garlic_Naan_efghij.png'),
+          (9, 'Samosa', 'Fried pastry with spiced potatoes', 5.99, TRUE, 'https://res.cloudinary.com/dfuedbntn/image/upload/v1744782179/Samosa_klmnop.png'),
+          (9, 'Mango Lassi', 'Yogurt drink with mango', 4.50, TRUE, 'https://res.cloudinary.com/dfuedbntn/image/upload/v1744782179/Mango_Lassi_qrstuv.png'),
       
           /* 10. Spice Garden (Indian) */
-          (10, 'Butter Chicken', 'Tandoori chicken in buttery sauce', 17.50, TRUE),
-          (10, 'Vegetable Biryani', 'Fragrant rice with mixed veggies', 14.99, TRUE),
-          (10, 'Palak Paneer', 'Spinach and cottage cheese curry', 13.99, TRUE),
-          (10, 'Raita', 'Yogurt with cucumber/mint', 3.50, TRUE),
-          (10, 'Gulab Jamun', 'Sweet milk dumplings in syrup', 5.99, TRUE),
+          (10, 'Butter Chicken', 'Tandoori chicken in buttery sauce', 17.50, TRUE, 'https://res.cloudinary.com/dfuedbntn/image/upload/v1744782179/Butter_Chicken_wxyzab.png'),
+          (10, 'Vegetable Biryani', 'Fragrant rice with mixed veggies', 14.99, TRUE, 'https://res.cloudinary.com/dfuedbntn/image/upload/v1744782179/Vegetable_Biryani_gpqjcl.png'),
+          (10, 'Palak Paneer', 'Spinach and cottage cheese curry', 13.99, TRUE, 'https://res.cloudinary.com/dfuedbntn/image/upload/v1744782179/Palak_Paneer_ijklmn.png'),
+          (10, 'Raita', 'Yogurt with cucumber/mint', 3.50, TRUE, 'https://res.cloudinary.com/dfuedbntn/image/upload/v1744782179/Raita_opqrst.png'),
+          (10, 'Gulab Jamun', 'Sweet milk dumplings in syrup', 5.99, TRUE, 'https://res.cloudinary.com/dfuedbntn/image/upload/v1744782179/Gulab_Jamun_uvwxyz.png'),
       
           /* 11. Le Bistro (French) */
-          (11, 'Coq au Vin', 'Chicken braised in red wine', 22.99, TRUE),
-          (11, 'Croque Monsieur', 'Ham and cheese grilled sandwich', 12.99, TRUE),
-          (11, 'French Onion Soup', 'Caramelized onion soup with cheese', 9.99, TRUE),
-          (11, 'Duck Confit', 'Slow-cooked duck leg', 24.99, TRUE),
-          (11, 'Crème Brûlée', 'Vanilla custard with caramelized sugar', 8.99, TRUE),
+          (11, 'Coq au Vin', 'Chicken braised in red wine', 22.99, TRUE, 'https://res.cloudinary.com/dfuedbntn/image/upload/v1744782179/Coq_au_Vin_abcdef.png'),
+          (11, 'Croque Monsieur', 'Ham and cheese grilled sandwich', 12.99, TRUE, 'https://res.cloudinary.com/dfuedbntn/image/upload/v1744782179/Croque_Monsieur_ghijkl.png'),
+          (11, 'French Onion Soup', 'Caramelized onion soup with cheese', 9.99, TRUE, 'https://res.cloudinary.com/dfuedbntn/image/upload/v1744782179/French_Onion_Soup_mnopqr.png'),
+          (11, 'Duck Confit', 'Slow-cooked duck leg', 24.99, TRUE, 'https://res.cloudinary.com/dfuedbntn/image/upload/v1744782179/Duck_Confit_stuvwx.png'),
+          (11, 'Crème Brûlée', 'Vanilla custard with caramelized sugar', 8.99, TRUE, 'https://res.cloudinary.com/dfuedbntn/image/upload/v1744782179/Creme_Brulee_yzabcd.png'),
       
           /* 12. Petit Paris (French) */
-          (12, 'Steak Frites', 'Grilled steak with French fries', 21.99, TRUE),
-          (12, 'Quiche Lorraine', 'Savory pie with bacon/cheese', 14.50, TRUE),
-          (12, 'Escargot', 'Snails in garlic butter', 16.99, TRUE),
-          (12, 'Ratatouille', 'Provençal vegetable stew', 13.99, TRUE),
-          (12, 'Macarons', 'Assorted French cookies', 9.50, TRUE),
+          (12, 'Steak Frites', 'Grilled steak with French fries', 21.99, TRUE, 'https://res.cloudinary.com/dfuedbntn/image/upload/v1744782179/Steak_Frites_efghij.png'),
+          (12, 'Quiche Lorraine', 'Savory pie with bacon/cheese', 14.50, TRUE, 'https://res.cloudinary.com/dfuedbntn/image/upload/v1744782179/Quiche_Lorraine_klmnop.png'),
+          (12, 'Escargot', 'Snails in garlic butter', 16.99, TRUE, 'https://res.cloudinary.com/dfuedbntn/image/upload/v1744782179/Escargot_qrstuv.png'),
+          (12, 'Ratatouille', 'Provençal vegetable stew', 13.99, TRUE, 'https://res.cloudinary.com/dfuedbntn/image/upload/v1744782179/Ratatouille_wxyzab.png'),
+          (12, 'Macarons', 'Assorted French cookies', 9.50, TRUE, 'https://res.cloudinary.com/dfuedbntn/image/upload/v1744782179/Macarons_cdefgh.png'),
       
           /* 13. Dragon Wok (Chinese) */
-          (13, 'General Tso Chicken', 'Crispy chicken in sweet/spicy sauce', 13.99, TRUE),
-          (13, 'Beef with Broccoli', 'Stir-fried beef with vegetables', 15.99, TRUE),
-          (13, 'Pork Dumplings', 'Steamed or fried', 8.99, TRUE),
-          (13, 'Egg Fried Rice', 'Classic fried rice with vegetables', 10.99, TRUE),
-          (13, 'Fortune Cookie', 'Crispy cookie with message', 1.50, TRUE),
+          (13, 'General Tso Chicken', 'Crispy chicken in sweet/spicy sauce', 13.99, TRUE, 'https://res.cloudinary.com/dfuedbntn/image/upload/v1744782179/General_Tso_Chicken_ijklmn.png'),
+          (13, 'Beef with Broccoli', 'Stir-fried beef with vegetables', 15.99, TRUE, 'https://res.cloudinary.com/dfuedbntn/image/upload/v1744782179/Beef_with_Broccoli_opqrst.png'),
+          (13, 'Pork Dumplings', 'Steamed or fried', 8.99, TRUE, 'https://res.cloudinary.com/dfuedbntn/image/upload/v1744782179/Pork_Dumplings_uvwxyz.png'),
+          (13, 'Egg Fried Rice', 'Classic fried rice with vegetables', 10.99, TRUE, 'https://res.cloudinary.com/dfuedbntn/image/upload/v1744782179/Egg_Fried_Rice_abcdef.png'),
+          (13, 'Fortune Cookie', 'Crispy cookie with message', 1.50, TRUE, 'https://res.cloudinary.com/dfuedbntn/image/upload/v1744782179/Fortune_Cookie_ghijkl.png'),
       
           /* 14. Lucky Noodle (Chinese) */
-          (14, 'Peking Duck', 'Crispy duck with pancakes', 28.99, TRUE),
-          (14, 'Dan Dan Noodles', 'Spicy Sichuan noodles', 12.99, TRUE),
-          (14, 'Kung Pao Shrimp', 'Stir-fried shrimp with peanuts', 17.99, TRUE),
-          (14, 'Wonton Soup', 'Pork dumplings in clear broth', 8.99, TRUE),
-          (14, 'Mooncake', 'Traditional pastry with filling', 6.99, TRUE),
+          (14, 'Peking Duck', 'Crispy duck with pancakes', 28.99, TRUE, 'https://res.cloudinary.com/dfuedbntn/image/upload/v1744782179/Peking_Duck_mnopqr.png'),
+          (14, 'Dan Dan Noodles', 'Spicy Sichuan noodles', 12.99, TRUE, 'https://res.cloudinary.com/dfuedbntn/image/upload/v1744782179/Dan_Dan_Noodles_stuvwx.png'),
+          (14, 'Kung Pao Shrimp', 'Stir-fried shrimp with peanuts', 17.99, TRUE, 'https://res.cloudinary.com/dfuedbntn/image/upload/v1744782179/Kung_Pao_Shrimp_yzabcd.png'),
+          (14, 'Wonton Soup', 'Pork dumplings in clear broth', 8.99, TRUE, 'https://res.cloudinary.com/dfuedbntn/image/upload/v1744782179/Wonton_Soup_efghij.png'),
+          (14, 'Mooncake', 'Traditional pastry with filling', 6.99, TRUE, 'https://res.cloudinary.com/dfuedbntn/image/upload/v1744782179/Mooncake_klmnop.png'),
       
           /* 15. Thai Orchid (Thai) */
-          (15, 'Pad Thai', 'Stir-fried rice noodles with peanuts', 14.99, TRUE),
-          (15, 'Green Curry', 'Coconut curry with chicken/veggies', 15.99, TRUE),
-          (15, 'Tom Yum Soup', 'Spicy/sour soup with shrimp', 10.99, TRUE),
-          (15, 'Mango Sticky Rice', 'Sweet dessert with coconut milk', 7.99, TRUE),
-          (15, 'Thai Iced Tea', 'Sweet spiced tea with milk', 4.50, TRUE),
+          (15, 'Pad Thai', 'Stir-fried rice noodles with peanuts', 14.99, TRUE, 'https://res.cloudinary.com/dfuedbntn/image/upload/v1744782179/Pad_Thai_qrstuv.png'),
+          (15, 'Green Curry', 'Coconut curry with chicken/veggies', 15.99, TRUE, 'https://res.cloudinary.com/dfuedbntn/image/upload/v1744782179/Green_Curry_wxyzab.png'),
+          (15, 'Tom Yum Soup', 'Spicy/sour soup with shrimp', 10.99, TRUE, 'https://res.cloudinary.com/dfuedbntn/image/upload/v1744782179/Tom_Yum_Soup_cdefgh.png'),
+          (15, 'Mango Sticky Rice', 'Sweet dessert with coconut milk', 7.99, TRUE, 'https://res.cloudinary.com/dfuedbntn/image/upload/v1744782179/Mango_Sticky_Rice_ijklmn.png'),
+          (15, 'Thai Iced Tea', 'Sweet spiced tea with milk', 4.50, TRUE, 'https://res.cloudinary.com/dfuedbntn/image/upload/v1744782179/Thai_Iced_Tea_opqrst.png'),
       
           /* 16. Olive Tree (Mediterranean) */
-          (16, 'Chicken Shawarma', 'Marinated chicken in pita', 12.99, TRUE),
-          (16, 'Falafel Plate', 'Chickpea fritters with hummus', 11.99, TRUE),
-          (16, 'Greek Salad', 'Cucumbers, tomatoes, feta, olives', 9.99, TRUE),
-          (16, 'Baklava', 'Layered pastry with nuts/honey', 6.50, TRUE),
-          (16, 'Mint Lemonade', 'Refreshing mint-flavored drink', 4.99, TRUE),
+          (16, 'Chicken Shawarma', 'Marinated chicken in pita', 12.99, TRUE, 'https://res.cloudinary.com/dfuedbntn/image/upload/v1744782179/Chicken_Shawarma_uvwxyz.png'),
+          (16, 'Falafel Plate', 'Chickpea fritters with hummus', 11.99, TRUE, 'https://res.cloudinary.com/dfuedbntn/image/upload/v1744782179/Falafel_Plate_abcdef.png'),
+          (16, 'Greek Salad', 'Cucumbers, tomatoes, feta, olives', 9.99, TRUE, 'https://res.cloudinary.com/dfuedbntn/image/upload/v1744782179/Greek_Salad_ghijkl.png'),
+          (16, 'Baklava', 'Layered pastry with nuts/honey', 6.50, TRUE, 'https://res.cloudinary.com/dfuedbntn/image/upload/v1744782179/Baklava_mnopqr.png'),
+          (16, 'Mint Lemonade', 'Refreshing mint-flavored drink', 4.99, TRUE, 'https://res.cloudinary.com/dfuedbntn/image/upload/v1744782179/Mint_Lemonade_stuvwx.png'),
       
           /* 17. Falafel King (Mediterranean) */
-          (17, 'Falafel Wrap', 'Crispy falafel in pita with tahini', 10.99, TRUE),
-          (17, 'Hummus Plate', 'Creamy chickpea dip with pita', 8.99, TRUE),
-          (17, 'Lamb Kebabs', 'Grilled skewered lamb', 16.99, TRUE),
-          (17, 'Tabouleh', 'Parsley and bulgur salad', 7.99, TRUE),
-          (17, 'Kunafa', 'Cheese pastry with syrup', 7.50, TRUE),
+          (17, 'Falafel Wrap', 'Crispy falafel in pita with tahini', 10.99, TRUE, 'https://res.cloudinary.com/dfuedbntn/image/upload/v1744782179/Falafel_Wrap_yzabcd.png'),
+          (17, 'Hummus Plate', 'Creamy chickpea dip with pita', 8.99, TRUE, 'https://res.cloudinary.com/dfuedbntn/image/upload/v1744782179/Hummus_Plate_efghij.png'),
+          (17, 'Lamb Kebabs', 'Grilled skewered lamb', 16.99, TRUE, 'https://res.cloudinary.com/dfuedbntn/image/upload/v1744782179/Lamb_Kebabs_klmnop.png'),
+          (17, 'Tabouleh', 'Parsley and bulgur salad', 7.99, TRUE, 'https://res.cloudinary.com/dfuedbntn/image/upload/v1744782179/Tabouleh_qrstuv.png'),
+          (17, 'Kunafa', 'Cheese pastry with syrup', 7.50, TRUE, 'https://res.cloudinary.com/dfuedbntn/image/upload/v1744782179/Kunafa_wxyzab.png'),
       
           /* 18. The Burger Joint (American) */
-          (18, 'Classic Cheeseburger', 'Beef patty with cheese/lettuce/tomato', 10.99, TRUE),
-          (18, 'Bacon BBQ Burger', 'Burger with bacon and BBQ sauce', 12.99, TRUE),
-          (18, 'Chicken Wings', 'Fried wings with choice of sauce', 11.99, TRUE),
-          (18, 'Onion Rings', 'Crispy battered onions', 5.99, TRUE),
-          (18, 'Chocolate Milkshake', 'Thick chocolate shake', 6.50, TRUE),
+          (18, 'Classic Cheeseburger', 'Beef patty with cheese/lettuce/tomato', 10.99, TRUE, 'https://res.cloudinary.com/dfuedbntn/image/upload/v1744782179/Classic_Cheeseburger_cdefgh.png'),
+          (18, 'Bacon BBQ Burger', 'Burger with bacon and BBQ sauce', 12.99, TRUE, 'https://res.cloudinary.com/dfuedbntn/image/upload/v1744782179/Bacon_BBQ_Burger_ijklmn.png'),
+          (18, 'Chicken Wings', 'Fried wings with choice of sauce', 11.99, TRUE, 'https://res.cloudinary.com/dfuedbntn/image/upload/v1744782179/Chicken_Wings_opqrst.png'),
+          (18, 'Onion Rings', 'Crispy battered onions', 5.99, TRUE, 'https://res.cloudinary.com/dfuedbntn/image/upload/v1744782179/Onion_Rings_uvwxyz.png'),
+          (18, 'Chocolate Milkshake', 'Thick chocolate shake', 6.50, TRUE, 'https://res.cloudinary.com/dfuedbntn/image/upload/v1744782179/Chocolate_Milkshake_abcdef.png'),
       
           /* 19. Pho 99 (Vietnamese) */
-          (19, 'Beef Pho', 'Noodle soup with rare beef', 12.99, TRUE),
-          (19, 'Spring Rolls', 'Fresh rolls with shrimp/herbs', 7.99, TRUE),
-          (19, 'Banh Mi Sandwich', 'Vietnamese baguette with pork', 9.99, TRUE),
-          (19, 'Lemongrass Chicken', 'Grilled chicken with rice', 14.99, TRUE),
-          (19, 'Vietnamese Iced Coffee', 'Strong coffee with condensed milk', 4.99, TRUE)
+          (19, 'Beef Pho', 'Noodle soup with rare beef', 12.99, TRUE, 'https://res.cloudinary.com/dfuedbntn/image/upload/v1744782179/Beef_Pho_ghijkl.png'),
+          (19, 'Spring Rolls', 'Fresh rolls with shrimp/herbs', 7.99, TRUE, 'https://res.cloudinary.com/dfuedbntn/image/upload/v1744782179/Spring_Rolls_mnopqr.png'),
+          (19, 'Banh Mi Sandwich', 'Vietnamese baguette with pork', 9.99, TRUE, 'https://res.cloudinary.com/dfuedbntn/image/upload/v1744782179/Banh_Mi_Sandwich_stuvwx.png'),
+          (19, 'Lemongrass Chicken', 'Grilled chicken with rice', 14.99, TRUE, 'https://res.cloudinary.com/dfuedbntn/image/upload/v1744782179/Lemongrass_Chicken_yzabcd.png'),
+          (19, 'Vietnamese Iced Coffee', 'Strong coffee with condensed milk', 4.99, TRUE, 'https://res.cloudinary.com/dfuedbntn/image/upload/v1744782179/Vietnamese_Iced_Coffee_efghij.png')
       `);
       console.log("✅ Dummy menu items inserted.");
     }
 
-    // Insert Tables - fix for table_number field
+    // Insert Tables
     const tableExists = await client.query("SELECT 1 FROM Tables LIMIT 1");
     if (tableExists.rowCount === 0) {
       await client.query(`
