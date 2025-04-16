@@ -64,16 +64,30 @@ const createTables = async () => {
       );
     `);
 
+    // Tables Table
+    await client.query(`
+      CREATE TABLE IF NOT EXISTS Tables (
+        table_no SERIAL PRIMARY KEY,
+        restaurant_id INTEGER REFERENCES Restaurants(restaurant_id) ON DELETE CASCADE,
+        capacity INTEGER NOT NULL,
+        is_available BOOLEAN DEFAULT TRUE,
+        type VARCHAR(255)
+      );
+    `);
+
     // Reservations Table
     await client.query(`
       CREATE TABLE IF NOT EXISTS Reservations (
         reservation_id SERIAL PRIMARY KEY,
         user_id INTEGER REFERENCES Users(user_id) ON DELETE CASCADE,
         restaurant_id INTEGER REFERENCES Restaurants(restaurant_id) ON DELETE CASCADE,
+        table_id INTEGER REFERENCES Tables(table_no) ON DELETE SET NULL,
         date DATE NOT NULL,
         time TIME NOT NULL,
+        end_time TIME,
         guests INTEGER NOT NULL,
         status INTEGER NOT NULL DEFAULT 0,
+        special_requests TEXT,
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
       );
     `);
@@ -109,17 +123,6 @@ const createTables = async () => {
         rating DECIMAL(2,1) NOT NULL,
         comment TEXT,
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-      );
-    `);
-
-    // Tables Table
-    await client.query(`
-      CREATE TABLE IF NOT EXISTS Tables (
-        table_no SERIAL PRIMARY KEY,
-        restaurant_id INTEGER REFERENCES Restaurants(restaurant_id) ON DELETE CASCADE,
-        capacity INTEGER NOT NULL,
-        is_available BOOLEAN DEFAULT TRUE,
-        type VARCHAR(255)
       );
     `);
 
@@ -162,50 +165,50 @@ const insertDummyData = async () => {
       console.log("✅ Dummy users inserted.");
     }
 
-    // Insert Restaurants
+    // Insert Restaurants (with updated locations)
     const restaurantExists = await client.query("SELECT 1 FROM Restaurants LIMIT 1");
     if (restaurantExists.rowCount === 0) {
       await client.query(`
         INSERT INTO Restaurants (name, location, rating, opening_hours)
         VALUES
           -- Italian (3)
-          ('Pasta Palace', '123 Food Ave', 4.5, '11:00-22:00'),
-          ('Trattoria Roma', '456 Italy St', 4.2, '12:00-23:00'),
-          ('Gelato Heaven', '789 Dessert Rd', 4.8, '10:00-21:00'),
+          ('Pasta Palace', 'Bahadurabad', 4.5, '11:00-22:00'),
+          ('Trattoria Roma', 'Bahadurabad', 4.2, '12:00-23:00'),
+          ('Gelato Heaven', 'Bahadurabad', 4.8, '10:00-21:00'),
           
           -- Mexican (2)
-          ('Taco Fiesta', '321 Spicy Lane', 4.1, '10:00-20:00'),
-          ('Burrito Loco', '654 Avocado Blvd', 3.9, '11:00-19:00'),
+          ('Taco Fiesta', 'Bahadurabad', 4.1, '10:00-20:00'),
+          ('Burrito Loco', 'Bahadurabad', 3.9, '11:00-19:00'),
           
           -- Japanese (3)
-          ('Sushi World', '555 Fish St', 4.7, '11:30-22:30'),
-          ('Ramen House', '888 Noodle Rd', 4.3, '12:00-21:00'),
-          ('Tokyo Grill', '222 Tempura Ave', 4.0, '17:00-23:00'),
+          ('Sushi World', 'Bahadurabad', 4.7, '11:30-22:30'),
+          ('Ramen House', 'Defence', 4.3, '12:00-21:00'),
+          ('Tokyo Grill', 'Defence', 4.0, '17:00-23:00'),
           
           -- Indian (2)
-          ('Curry House', '777 Masala Dr', 4.4, '11:00-21:30'),
-          ('Spice Garden', '333 Tandoori Ln', 4.6, '12:00-22:00'),
+          ('Curry House', 'Defence', 4.4, '11:00-21:30'),
+          ('Spice Garden', 'Defence', 4.6, '12:00-22:00'),
           
           -- French (2)
-          ('Le Bistro', '444 Croissant St', 4.9, '08:00-20:00'),
-          ('Petit Paris', '666 Baguette Rd', 4.2, '09:00-19:00'),
+          ('Le Bistro', 'Defence', 4.9, '08:00-20:00'),
+          ('Petit Paris', 'Defence', 4.2, '09:00-19:00'),
           
           -- Chinese (2)
-          ('Dragon Wok', '999 Panda Ave', 3.8, '10:30-21:00'),
-          ('Lucky Noodle', '111 Fortune Dr', 4.1, '11:00-22:00'),
+          ('Dragon Wok', 'Defence', 3.8, '10:30-21:00'),
+          ('Lucky Noodle', 'Johar', 4.1, '11:00-22:00'),
           
           -- Thai (1)
-          ('Thai Orchid', '555 Basil Ln', 4.5, '12:00-21:30'),
+          ('Thai Orchid', 'Johar', 4.5, '12:00-21:30'),
           
           -- Mediterranean (2)
-          ('Olive Tree', '777 Hummus St', 4.3, '10:00-20:00'),
-          ('Falafel King', '888 Tahini Rd', 4.0, '11:00-19:00'),
+          ('Olive Tree', 'Johar', 4.3, '10:00-20:00'),
+          ('Falafel King', 'Johar', 4.0, '11:00-19:00'),
           
           -- American (1)
-          ('The Burger Joint', '101 Patty Ave', 3.7, '08:00-22:00'),
+          ('The Burger Joint', 'Johar', 3.7, '08:00-22:00'),
           
           -- Vietnamese (1)
-          ('Pho 99', '202 Broth St', 4.4, '10:00-21:00');
+          ('Pho 99', 'Johar', 4.4, '10:00-21:00');
       `);
       console.log("✅ Dummy restaurants inserted.");
     }
@@ -374,60 +377,22 @@ const insertDummyData = async () => {
       console.log("✅ Dummy menu items inserted.");
     }
 
-    // Insert Reservations
-    const reservationExists = await client.query("SELECT 1 FROM Reservations LIMIT 1");
-    if (reservationExists.rowCount === 0) {
-      await client.query(`
-        INSERT INTO Reservations (user_id, restaurant_id, date, time, guests, status, created_at)
-        VALUES
-          /* Pasta Palace */
-          (7, 1, '2025-04-10', '18:30:00', 2, 1, '2025-03-25 09:00:00'), -- John (confirmed)
-          (8, 1, '2025-04-11', '19:00:00', 4, 0, '2025-03-26 10:30:00'), -- Alice (pending)
-          
-          /* Sushi World */
-          (9, 6, '2025-04-12', '20:00:00', 3, 1, '2025-03-27 11:15:00'), -- Bob (confirmed)
-          (7, 6, '2025-04-13', '12:30:00', 2, 2, '2025-03-28 14:00:00'), -- John (cancelled)
-          
-          /* Curry House */
-          (8, 9, '2025-04-14', '19:30:00', 6, 1, '2025-03-29 16:45:00'), -- Alice (confirmed)
-          
-          /* Le Bistro */
-          (9, 11, '2025-04-15', '18:00:00', 2, 1, '2025-03-30 10:20:00'), -- Bob (confirmed)
-          
-          /* Thai Orchid */
-          (10, 15, '2025-04-16', '20:30:00', 4, 0, '2025-04-01 12:10:00'), -- Emma (pending)
-          
-          /* The Burger Joint */
-          (7, 18, '2025-04-17', '13:00:00', 3, 1, '2025-04-02 08:30:00'), -- John (confirmed)
-          
-          /* Multi-restaurant examples */
-          (8, 2, '2025-04-18', '19:00:00', 2, 1, '2025-04-03 17:00:00'), -- Alice @ Trattoria Roma
-          (9, 7, '2025-04-19', '12:00:00', 5, 1, '2025-04-04 09:45:00'), -- Bob @ Ramen House
-          (10, 12, '2025-04-20', '20:00:00', 2, 0, '2025-04-05 18:20:00'), -- Emma @ Petit Paris
-          (7, 16, '2025-04-21', '19:30:00', 4, 1, '2025-04-06 11:30:00'), -- John @ Olive Tree
-          (8, 19, '2025-04-22', '18:00:00', 3, 1, '2025-04-07 14:15:00'), -- Alice @ Pho 99
-          (9, 3, '2025-04-23', '14:00:00', 2, 2, '2025-04-08 10:50:00'), -- Bob @ Gelato Heaven (cancelled)
-          (10, 5, '2025-04-24', '21:00:00', 2, 1, '2025-04-09 13:40:00'); -- Emma @ Burrito Loco
-      `);
-      console.log("✅ Dummy reservations inserted.");
-    }
-
-    // Insert Tables
+    // Insert Tables - fix for table_number field
     const tableExists = await client.query("SELECT 1 FROM Tables LIMIT 1");
     if (tableExists.rowCount === 0) {
       await client.query(`
-        INSERT INTO Tables (restaurant_id, capacity, type)
+        INSERT INTO Tables (restaurant_id, capacity, is_available, type)
         VALUES 
-          (1, 4, 'Booth'),
-          (1, 2, 'Outdoor'),
-          (2, 6, 'Family'),
-          (6, 8, 'Tatami Room'),
-          (6, 2, 'Sushi Bar'),
-          (11, 4, 'Window'),
-          (11, 2, 'Romantic'),
-          (15, 6, 'Family'),
-          (18, 4, 'Booth'),
-          (19, 8, 'Large Group');
+          (1, 4, TRUE, 'Booth'),
+          (1, 2, TRUE, 'Outdoor'),
+          (2, 6, TRUE, 'Family'),
+          (6, 8, TRUE, 'Tatami Room'),
+          (6, 2, TRUE, 'Sushi Bar'),
+          (11, 4, TRUE, 'Window'),
+          (11, 2, TRUE, 'Romantic'),
+          (15, 6, TRUE, 'Family'),
+          (18, 4, TRUE, 'Booth'),
+          (19, 8, TRUE, 'Large Group');
       `);
       console.log("✅ Dummy tables inserted.");
     }

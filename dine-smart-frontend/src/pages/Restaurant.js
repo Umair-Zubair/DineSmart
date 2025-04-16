@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, Link } from "react-router-dom";
 import axios from "axios";
 import "../cssfiles/Restaurant.css";
 
@@ -102,7 +102,10 @@ const Restaurant = () => {
             )}
           </div>
 
-          <button className="reserve-button">Reserve a Table</button>
+          {/* Updated reserve button with Link */}
+          <Link to={`/restaurant/${restaurant_id}/reserve`} className="reserve-button">
+            Reserve a Table
+          </Link>
         </>
       ) : (
         <p>Restaurant not found.</p>
