@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import '../cssfiles/Header.css';
 
 const Header = () => {
@@ -11,6 +11,9 @@ const Header = () => {
     const [name, setName] = useState('');
     const [errorMessage, setErrorMessage] = useState('');
     const [user, setUser] = useState(null);
+    
+    // Add React Router's navigation hook
+    const navigate = useNavigate();
     
     // Base API URL
     const API_BASE_URL = "https://dinesmart-backend.vercel.app";
@@ -68,6 +71,9 @@ const Header = () => {
                 localStorage.setItem('user', JSON.stringify(matchedUser));
                 setUser(matchedUser);
                 closePopups();
+                
+                // Force reload the current page to refresh data
+                navigate(0);
             } else {
                 setErrorMessage('Invalid email or password');
             }
@@ -125,6 +131,9 @@ const Header = () => {
             localStorage.setItem('user', JSON.stringify(newUser));
             setUser(newUser);
             closePopups();
+            
+            // Force reload the current page to refresh data
+            navigate(0);
         } catch (error) {
             setErrorMessage(`Signup failed: ${error.message}`);
             console.error('Signup error:', error);
@@ -134,6 +143,9 @@ const Header = () => {
     const handleLogout = () => {
         localStorage.removeItem('user');
         setUser(null);
+        
+        // Force reload the current page to refresh data
+        navigate(0);
     };
 
     return (
@@ -146,10 +158,9 @@ const Header = () => {
                 </div>
 
                 <nav className={`nav-menu ${isMenuOpen ? 'active' : ''}`}>
-                    <Link to="/" className="nav-link">Home</Link>
-                    <Link to="/restaurants" className="nav-link">Restaurants</Link>
+                    <Link to="/" className="nav-link">Restaurants</Link>
+                    <Link to="/preorder" className="nav-link">Pre-order</Link>
                     <Link to="/about" className="nav-link">About</Link>
-                    <Link to="/contact" className="nav-link">Contact</Link>
                 </nav>
 
                 <div className="header-actions">
