@@ -174,43 +174,43 @@ const insertDummyData = async () => {
         INSERT INTO Restaurants (name, location, rating, opening_hours, image_url)
         VALUES
           -- Italian (3)
-          ('Pasta Palace', 'Bahadurabad', 4.5, '11:00-22:00', 'https://res.cloudinary.com/dfuedbntn/image/upload/v1744782179/pasta_palace_i6jtox.jpg'),
-          ('Trattoria Roma', 'Bahadurabad', 4.2, '12:00-23:00', 'https://res.cloudinary.com/dfuedbntn/image/upload/v1744782179/trattoria_roma_zj4k5p.jpg'),
-          ('Gelato Heaven', 'Bahadurabad', 4.8, '10:00-21:00', 'https://res.cloudinary.com/dfuedbntn/image/upload/v1744782179/gelato_heaven_ruvhgc.jpg'),
+          ('Pasta Palace', 'Bahadurabad', 4.5, '11:00-22:00', 'https://res.cloudinary.com/dfuedbntn/image/upload/v1745176623/75847f46-94ec-4db9-9720-5f6ea0f991bd.png'),
+          ('Trattoria Roma', 'Bahadurabad', 4.2, '12:00-23:00', 'https://res.cloudinary.com/dfuedbntn/image/upload/v1745176661/e30b685a-ce49-47d4-978d-fdfda896d6ca.png'),
+          ('Gelato Heaven', 'Bahadurabad', 4.8, '10:00-21:00', 'https://res.cloudinary.com/dfuedbntn/image/upload/v1745176716/4219dc0b-322b-46cd-9337-a67b681a4677.png'),
           
           -- Mexican (2)
-          ('Taco Fiesta', 'Bahadurabad', 4.1, '10:00-20:00', 'https://res.cloudinary.com/dfuedbntn/image/upload/v1744782179/taco_fiesta_k9yxle.jpg'),
-          ('Burrito Loco', 'Bahadurabad', 3.9, '11:00-19:00', 'https://res.cloudinary.com/dfuedbntn/image/upload/v1744782179/burrito_loco_wbeqfx.jpg'),
+          ('Taco Fiesta', 'Bahadurabad', 4.1, '10:00-20:00', 'https://res.cloudinary.com/dfuedbntn/image/upload/v1745176731/68a23598-d02e-4964-897d-a79263fa2b73.png'),
+          ('Burrito Loco', 'Bahadurabad', 3.9, '11:00-19:00', 'https://res.cloudinary.com/dfuedbntn/image/upload/v1745176772/4cf17e4e-79c1-44bd-a02d-7d0c76021a6e.png'),
           
           -- Japanese (3)
-          ('Sushi World', 'Bahadurabad', 4.7, '11:30-22:30', 'https://res.cloudinary.com/dfuedbntn/image/upload/v1744782179/sushi_world_n1yvnq.jpg'),
-          ('Ramen House', 'Defence', 4.3, '12:00-21:00', 'https://res.cloudinary.com/dfuedbntn/image/upload/v1744782179/ramen_house_lfbfwg.jpg'),
-          ('Tokyo Grill', 'Defence', 4.0, '17:00-23:00', 'https://res.cloudinary.com/dfuedbntn/image/upload/v1744782179/tokyo_grill_xwopym.jpg'),
+          ('Sushi World', 'Bahadurabad', 4.7, '11:30-22:30', 'https://res.cloudinary.com/dfuedbntn/image/upload/v1745176794/fbf6b118-2385-4c5a-a1a9-2780b307f51e.png'),
+          ('Ramen House', 'Defence', 4.3, '12:00-21:00', 'https://res.cloudinary.com/dfuedbntn/image/upload/v1745176853/f131a34a-5f09-4978-b6ad-a7087593b14b.png'),
+          ('Tokyo Grill', 'Defence', 4.0, '17:00-23:00', 'https://res.cloudinary.com/dfuedbntn/image/upload/v1745176908/be176184-a0f2-4d99-8909-57e76a8bb841.png'),
           
           -- Indian (2)
-          ('Curry House', 'Defence', 4.4, '11:00-21:30', 'https://res.cloudinary.com/dfuedbntn/image/upload/v1744782179/curry_house_jfpyeh.jpg'),
-          ('Spice Garden', 'Defence', 4.6, '12:00-22:00', 'https://res.cloudinary.com/dfuedbntn/image/upload/v1744782179/spice_garden_vctznb.jpg'),
+          ('Curry House', 'Defence', 4.4, '11:00-21:30', 'https://res.cloudinary.com/dfuedbntn/image/upload/v1745176934/78316172-11d6-487d-9624-28c8112a1cd0.png'),
+          ('Spice Garden', 'Defence', 4.6, '12:00-22:00', 'https://res.cloudinary.com/dfuedbntn/image/upload/v1745176948/1d053f16-9fc5-4e50-b5cc-1a8b935017ee.png'),
           
           -- French (2)
-          ('Le Bistro', 'Defence', 4.9, '08:00-20:00', 'https://res.cloudinary.com/dfuedbntn/image/upload/v1744782179/le_bistro_jmhxkl.jpg'),
-          ('Petit Paris', 'Defence', 4.2, '09:00-19:00', 'https://res.cloudinary.com/dfuedbntn/image/upload/v1744782179/petit_paris_pjw27i.jpg'),
+          ('Le Bistro', 'Defence', 4.9, '08:00-20:00', 'https://res.cloudinary.com/dfuedbntn/image/upload/v1745176982/f6d772e8-038c-4c29-b545-42f95bacf9fe.png'),
+          ('Petit Paris', 'Defence', 4.2, '09:00-19:00', 'https://res.cloudinary.com/dfuedbntn/image/upload/v1745177014/217e0095-a104-4968-89c7-9cebaacff2f4.png'),
           
           -- Chinese (2)
-          ('Dragon Wok', 'Defence', 3.8, '10:30-21:00', 'https://res.cloudinary.com/dfuedbntn/image/upload/v1744782179/dragon_wok_fwrygj.jpg'),
-          ('Lucky Noodle', 'Johar', 4.1, '11:00-22:00', 'https://res.cloudinary.com/dfuedbntn/image/upload/v1744782179/lucky_noodle_a3bfdx.jpg'),
+          ('Dragon Wok', 'Defence', 3.8, '10:30-21:00', 'https://res.cloudinary.com/dfuedbntn/image/upload/v1745177040/3aae31c4-99d4-4de4-9d9b-dfa8ca4308a4.png'),
+          ('Lucky Noodle', 'Johar', 4.1, '11:00-22:00', 'https://res.cloudinary.com/dfuedbntn/image/upload/v1745177081/32504af6-7888-4983-a00c-b23111055501.png'),
           
           -- Thai (1)
-          ('Thai Orchid', 'Johar', 4.5, '12:00-21:30', 'https://res.cloudinary.com/dfuedbntn/image/upload/v1744782179/thai_orchid_r6wbhj.jpg'),
+          ('Thai Orchid', 'Johar', 4.5, '12:00-21:30', 'https://res.cloudinary.com/dfuedbntn/image/upload/v1745177097/7f1dab38-f268-4a72-8521-003ffec4d027.png'),
           
           -- Mediterranean (2)
-          ('Olive Tree', 'Johar', 4.3, '10:00-20:00', 'https://res.cloudinary.com/dfuedbntn/image/upload/v1744782179/olive_tree_rrhdkp.jpg'),
-          ('Falafel King', 'Johar', 4.0, '11:00-19:00', 'https://res.cloudinary.com/dfuedbntn/image/upload/v1744782179/falafel_king_wvepjr.jpg'),
+          ('Olive Tree', 'Johar', 4.3, '10:00-20:00', 'https://res.cloudinary.com/dfuedbntn/image/upload/v1745177133/f3c74881-70fc-4a00-b0ea-16d8946288c7.png'),
+          ('Falafel King', 'Johar', 4.0, '11:00-19:00', 'https://res.cloudinary.com/dfuedbntn/image/upload/v1745177162/a031296b-1a0f-4865-8421-b2bcd2d5827f.png'),
           
           -- American (1)
-          ('The Burger Joint', 'Johar', 3.7, '08:00-22:00', 'https://res.cloudinary.com/dfuedbntn/image/upload/v1744782179/burger_joint_qfv8zn.jpg'),
+          ('The Burger Joint', 'Johar', 3.7, '08:00-22:00', 'https://res.cloudinary.com/dfuedbntn/image/upload/v1745177200/464d0da4-f733-47bc-b1b4-d1c75633eec5.png'),
           
           -- Vietnamese (1)
-          ('Pho 99', 'Johar', 4.4, '10:00-21:00', 'https://res.cloudinary.com/dfuedbntn/image/upload/v1744782179/pho_99_klmcep.jpg');
+          ('Pho 99', 'Johar', 4.4, '10:00-21:00', 'https://res.cloudinary.com/dfuedbntn/image/upload/v1745177218/fa1fc957-faf1-4348-a42d-c5df7ea896ba.png');
       `);
       console.log("✅ Dummy restaurants inserted.");
     }
