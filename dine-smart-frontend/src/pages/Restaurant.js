@@ -88,15 +88,33 @@ const Restaurant = () => {
           <div className="menu-container">
             <h2 className="menu-title">Menu</h2>
             {menuItems && menuItems.length > 0 ? (
-              <ul className="menu-list">
+              <div className="menu-grid">
                 {menuItems.map((item) => (
-                  <li key={item.item_id} className="menu-item">
-                    <h3>{item.name}</h3>
-                    <p>{item.description}</p>
-                    <span className="menu-price">${item.price}</span>
-                  </li>
+                  <div key={item.item_id} className="menu-item-card">
+                    {item.image_url && (
+                      <div className="menu-item-image-container">
+                        <img 
+                          src={item.image_url} 
+                          alt={item.name}
+                          className="menu-item-image" 
+                          onError={(e) => {
+                            e.target.onerror = null;
+                            e.target.src = "https://via.placeholder.com/150?text=No+Image";
+                          }}
+                        />
+                      </div>
+                    )}
+                    <div className="menu-item-details">
+                      <h3>{item.name}</h3>
+                      <p className="menu-item-description">{item.description}</p>
+                      <span className="menu-price">${item.price}</span>
+                      {!item.availability && (
+                        <span className="unavailable-badge">Currently Unavailable</span>
+                      )}
+                    </div>
+                  </div>
                 ))}
-              </ul>
+              </div>
             ) : (
               <p>No menu items available for this restaurant.</p>
             )}
