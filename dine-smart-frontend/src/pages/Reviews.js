@@ -207,6 +207,26 @@ const Reviews = () => {
         return new Date(dateString).toLocaleDateString(undefined, options);
     };
 
+    // Calculate average rating with error handling
+    const calculateAverageRating = (reviews) => {
+        if (!reviews || reviews.length === 0) {
+            return 0;
+        }
+        
+        // Make sure we're dealing with numbers
+        const validRatings = reviews.map(review => {
+            // Convert to number and ensure it's between 1-5
+            const rating = Number(review.rating);
+            return isNaN(rating) ? 0 : Math.min(Math.max(rating, 0), 5);
+        });
+        
+        // Sum all ratings
+        const sum = validRatings.reduce((acc, rating) => acc + rating, 0);
+        
+        // Calculate average
+        return sum / validRatings.length;
+    };
+
     if (loading) {
         return <div className="loading">Loading reviews...</div>;
     }
@@ -218,8 +238,8 @@ const Reviews = () => {
                 
                 {error && <div className="error-message">{error}</div>}
                 
-                {/* Debug Information - Remove in Production */}
-                {/* <div className="debug-section" style={{background: '#f8f8f8', padding: '20px', margin: '20px 0', border: '1px solid #ddd', borderRadius: '4px'}}>
+                {/* Debug Information - Remove in Production
+                <div className="debug-section" style={{background: '#f8f8f8', padding: '20px', margin: '20px 0', border: '1px solid #ddd', borderRadius: '4px'}}>
                     <h4>Debug Information (Remove in Production)</h4>
                     <p>User logged in: {user ? 'Yes' : 'No'}</p>
                     {user && <p>User ID: {user.user_id}, Name: {user.name}</p>}
@@ -313,8 +333,8 @@ const Reviews = () => {
                             return null; // Skip restaurants with no reviews
                         }
                         
-                        // Calculate average rating
-                        const averageRating = restaurantReviews.reduce((acc, review) => acc + review.rating, 0) / restaurantReviews.length;
+                        // Calculate average rating using the new helper function
+                        const averageRating = calculateAverageRating(restaurantReviews);
                         
                         return (
                             <div key={restaurant.restaurant_id} className="restaurant-reviews">

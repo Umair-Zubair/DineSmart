@@ -160,8 +160,7 @@ const Header = () => {
                 <nav className={`nav-menu ${isMenuOpen ? 'active' : ''}`}>
                     <Link to="/" className="nav-link">Restaurants</Link>
                     <Link to="/preorder" className="nav-link">Pre-order</Link>
-                    <Link to="/reviews" className="nav-link">Reviews</Link> {/* Added Reviews link */}
-                    <Link to="/about" className="nav-link">About</Link>
+                    <Link to="/reviews" className="nav-link">Reviews</Link>
                 </nav>
 
                 <div className="header-actions">
