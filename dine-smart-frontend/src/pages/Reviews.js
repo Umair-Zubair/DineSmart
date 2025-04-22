@@ -60,28 +60,46 @@ const Reviews = () => {
                 debugInfo.currentUser = userData;
                 
                 // Filter reservations for this user
-                const userReservs = reservationsData.filter(res => res.user_id === userData.user_id);
+                const userReservs = reservationsData.filter(res => 
+                    Number(res.user_id) === Number(userData.user_id)
+                );
                 setUserReservations(userReservs);
                 debugInfo.userReservations = userReservs;
                 
-                // Determine which past reservations need reviews
+                // Determine which reservations are eligible for review
+                // A reservation is eligible if:
+                // 1. It's a past date, OR
+                // 2. It's today but the end_time has passed
                 const now = new Date();
                 debugInfo.currentDate = now.toString();
                 
                 const pastReservations = userReservs.filter(res => {
-                    const reservationDate = new Date(res.date + 'T' + res.time);
+                    // Create date objects for comparison
+                    const reservationDate = new Date(res.date);
+                    const reservationDateTime = new Date(res.date.split('T')[0] + 'T' + res.end_time);
+                    
+                    // For debug
                     debugInfo.reservationDate = reservationDate.toString();
-                    const isPast = reservationDate < now;
-                    return isPast;
+                    debugInfo.reservationEndTime = reservationDateTime.toString();
+                    
+                    // Check if date is in the past
+                    const dateInPast = reservationDate < now;
+                    
+                    // Check if it's today and time has passed
+                    const isToday = reservationDate.toDateString() === now.toDateString();
+                    const timeHasPassed = reservationDateTime < now;
+                    
+                    // Reservation is eligible for review if date is in past OR (it's today AND end time has passed)
+                    return dateInPast || (isToday && timeHasPassed);
                 });
                 
                 debugInfo.pastReservations = pastReservations;
                 
-                // Check which past reservations don't have reviews yet
+                // Check which eligible reservations don't have reviews yet
                 const pendingReviewsList = pastReservations.filter(res => {
                     const hasNoReview = !reviewsData.some(review => 
-                        review.user_id === userData.user_id && 
-                        review.restaurant_id === res.restaurant_id
+                        Number(review.user_id) === Number(userData.user_id) && 
+                        Number(review.restaurant_id) === Number(res.restaurant_id)
                     );
                     return hasNoReview;
                 });
@@ -170,14 +188,14 @@ const Reviews = () => {
 
     // Get restaurant name by ID
     const getRestaurantName = (id) => {
-        const restaurant = restaurants.find(r => r.restaurant_id === id);
+        const restaurant = restaurants.find(r => Number(r.restaurant_id) === Number(id));
         return restaurant ? restaurant.name : 'Unknown Restaurant';
     };
 
     // Get user name by ID
     const getUserName = (id) => {
         // If it's the current user
-        if (user && user.user_id === id) {
+        if (user && Number(user.user_id) === Number(id)) {
             return user.name;
         }
         return `User #${id}`;
@@ -201,7 +219,7 @@ const Reviews = () => {
                 {error && <div className="error-message">{error}</div>}
                 
                 {/* Debug Information - Remove in Production */}
-                <div className="debug-section" style={{background: '#f8f8f8', padding: '20px', margin: '20px 0', border: '1px solid #ddd', borderRadius: '4px'}}>
+                {/* <div className="debug-section" style={{background: '#f8f8f8', padding: '20px', margin: '20px 0', border: '1px solid #ddd', borderRadius: '4px'}}>
                     <h4>Debug Information (Remove in Production)</h4>
                     <p>User logged in: {user ? 'Yes' : 'No'}</p>
                     {user && <p>User ID: {user.user_id}, Name: {user.name}</p>}
@@ -218,7 +236,7 @@ const Reviews = () => {
                         <summary>All Debug Data</summary>
                         <pre>{JSON.stringify(debug, null, 2)}</pre>
                     </details>
-                </div>
+                </div> */}
                 
                 {user && pendingReviews.length > 0 && (
                     <div className="pending-reviews-section">
@@ -287,7 +305,9 @@ const Reviews = () => {
                     
                     {restaurants.map(restaurant => {
                         // Get reviews for this restaurant
-                        const restaurantReviews = reviews.filter(r => r.restaurant_id === restaurant.restaurant_id);
+                        const restaurantReviews = reviews.filter(r => 
+                            Number(r.restaurant_id) === Number(restaurant.restaurant_id)
+                        );
                         
                         if (restaurantReviews.length === 0) {
                             return null; // Skip restaurants with no reviews
